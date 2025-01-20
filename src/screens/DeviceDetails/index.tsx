@@ -15,11 +15,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import Graph from "./components/Graph";
 import SelectPeriod from "@components/SelectPeriod";
 import EnergyConsumption from "./components/EnergyConsumption";
+import HeaderBack from "@components/HeaderBack";
 
 type Props = NativeStackScreenProps<RootStackParamList, "DeviceDetails">;
 
 export default function DeviceDetails({ navigation, route }: Props) {
-  const { top } = useSafeAreaInsets();
   const colorTheme = useTheme();
   const id = route.params.id;
   const device = MOCK_DEVICES.find(d => d.id === id)
@@ -45,10 +45,11 @@ export default function DeviceDetails({ navigation, route }: Props) {
   return (
     <ScrollView
       style={{
-        paddingTop: top,
         paddingHorizontal: theme.spacing.containerPadding,
       }}
     >
+      <HeaderBack lastScreen="Home" />
+
       <View style={styles.containerHeader}>
         <Text type="title1">{device.name}</Text>
         <TouchableOpacity onPress={handleSetFavorite}>

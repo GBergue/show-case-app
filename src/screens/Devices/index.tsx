@@ -12,7 +12,7 @@ export default function Devices() {
   const { top } = useSafeAreaInsets();
 
   return (
-    <View style={{ paddingTop: top }}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, paddingTop: top }}>
       <View style={styles.containerHeader}>
         <Text type='large'>Devices</Text>
         <AntDesign name="plus" size={24} color="black" />
@@ -21,8 +21,7 @@ export default function Devices() {
       <DeviceGroups />
 
       <DevicesList />
-
-    </View>
+    </ScrollView>
   )
 }
 

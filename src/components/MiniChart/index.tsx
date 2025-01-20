@@ -1,16 +1,16 @@
 import { View } from "react-native";
 import { Bar, CartesianChart } from "victory-native";
 
-const DATA = Array.from({ length: 7 }, (_, i) => ({
-  day: i,
-  energy: 40 + 30 * Math.random(),
-}));
-
 interface Props {
   color: string;
 }
 
 export default function MiniChart({ color }: Props) {
+  const DATA = Array.from({ length: 7 }, (_, i) => ({
+    day: i,
+    energy: 40 + 30 * Math.random(),
+  }));
+  
   return (
     <View style={{ height: 50, width: 100 }}>
       <CartesianChart

@@ -33,7 +33,8 @@
             "./assets/fonts/SF-Pro.ttf"
           ]
         }
-      ]
+      ],
+      "react-native-ble-plx"
     ]
   }
 }

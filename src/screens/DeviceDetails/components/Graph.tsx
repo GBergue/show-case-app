@@ -18,7 +18,20 @@ export default function Graph({ DATA, xKey, xLabel }: Props) {
   const { state, isActive } = useChartPressState({ x: 0, y: { consumption: 0 } });
 
   return (
-    <View style={{ height: 200,backgroundColor: colorTheme.white }}>
+    <View style={{ backgroundColor: colorTheme.white }}>
+      {state.isActive && state.x.position !== null && (
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <View>
+            <Text type="caption1" fontColor={colorTheme.gray}>{xLabel.toUpperCase()}</Text>
+            <Text>{state.x.value.value}</Text>
+          </View>
+          <View>
+            <Text type="caption1" fontColor={colorTheme.gray}>COSUMPTION</Text>
+            <Text>{state.y.consumption.value.value}</Text>
+          </View>
+        </View>
+      )}
+      <View style={{ height: 200  }}>
       <CartesianChart
         data={DATA}
         xKey={xKey}
@@ -31,27 +44,18 @@ export default function Graph({ DATA, xKey, xLabel }: Props) {
             <>
               <Line points={points.consumption} color={colorTheme.blue} strokeWidth={2} animate={{ type: "timing", duration: 300 }}/>
               {isActive && (
-                <ToolTip font={font} x={state.x.position} yValue={state.y.consumption.value} y={state.y.consumption.position} />
+                <ToolTip x={state.x.position} y={state.y.consumption.position} />
               )}
             </>
           )
         }}
       </CartesianChart>
-      {state.isActive && state.x.position !== null && (
-        <View>
-          <Text >
-            {xLabel} {state.x.value.value}
-          </Text>
-          <Text >
-            Cosumption {state.y.consumption.value.value}
-          </Text>
-        </View>
-      )}
+      </View>
     </View>
   );
 }
 
-function ToolTip({ x, y, yValue, font }: { x: SharedValue<number>; y: SharedValue<number>; yValue: SharedValue<number>  }) {
+function ToolTip({ x, y }: { x: SharedValue<number>; y: SharedValue<number> }) {
   return (
       <Circle cx={x} cy={y} r={4} color={'#000'} />
   )

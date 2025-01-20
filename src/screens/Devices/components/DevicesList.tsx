@@ -1,39 +1,53 @@
-import CardGroup from '@components/CardGroup';
-import CardTitle from '@components/CardTitle';
-import { theme } from '@theme/index';
-import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { MOCK_DEVICES } from '../../../data/mock';
-import CardDevice from '@components/CardDevice';
-import { useNavigation } from '@react-navigation/native';
+import CardDevice from "@components/CardDevice";
+import CardTitle from "@components/CardTitle";
+import { useNavigation } from "@react-navigation/native";
+import { theme } from "@theme/index";
+import React from "react";
+import { Dimensions, StyleSheet, View } from "react-native";
+import { MOCK_DEVICES } from "../../../data/mock";
 
 
 export default function DevicesList() {
   const navigation = useNavigation();
+  const windowWidth = Dimensions.get('window').width;
+
+  console.log('windowWidth', windowWidth);
   
+  const cardWidth = (windowWidth - 32 - theme.spacing.margin) / 2;
+  console.log('cardWidth', cardWidth);
+
   function navigateToDetails(id: string) {
-    navigation.navigate('DeviceDetails', { id });
+    navigation.navigate("DeviceDetails", { id });
   }
 
   return (
     <View style={styles.container}>
-      <CardTitle title='Devices' />
-      
-      <FlatList
-        numColumns={2}
-        showsHorizontalScrollIndicator={false}
-        ItemSeparatorComponent={() => <View style={{ width: 8 }} />}
-        data={MOCK_DEVICES}
-        renderItem={({ item }) => <CardDevice navigateToDetails={() => navigateToDetails(item.id)} device={item} />}
-        keyExtractor={(item) => item.id}
-      />
+      <CardTitle title="Devices" />
+
+      <View
+        style={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          rowGap: theme.spacing.margin,
+        }}
+      >
+        {MOCK_DEVICES.map((d) => (
+          <CardDevice
+            key={d.id}
+            width={cardWidth}
+            navigateToDetails={() => navigateToDetails(d.id)}
+            device={d}
+          />
+        ))}
+      </View>
     </View>
-  )
+  );
 }
 
 export const styles = StyleSheet.create({
   container: {
     marginHorizontal: theme.spacing.containerPadding,
-    paddingBottom: theme.spacing.containerPadding,
+    paddingBottom: 36,
   },
 });

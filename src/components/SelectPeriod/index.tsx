@@ -27,6 +27,7 @@ export default function SelectPeriod({ selected, setSelected }: Props) {
     <View style={styles.container}>
       {PERIODS.map((p) => (
         <PeriodButton
+          key={p}
           isSelected={p === selected}
           value={p}
           onPress={() => handleSelect(p)}
