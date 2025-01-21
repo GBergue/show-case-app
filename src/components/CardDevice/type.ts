@@ -3,5 +3,7 @@ export interface DeviceBean {
   name: string,
   status: 'online' | 'offline',
   img: string,
+  wind?: string,
+  temperature?: number
   favorite: boolean,
 }

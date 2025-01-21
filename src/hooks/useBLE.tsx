@@ -1,21 +1,19 @@
-/* eslint-disable no-bitwise */
 import { useMemo, useState } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import {
-  BleError,
   BleManager,
-  Characteristic,
-  Device,
+  Device
 } from "react-native-ble-plx";
 
-const SERVICE_UUID = "0000180d-0000-1000-8000-00805f9b34fb";
-const CHARACTERISTIC_UUID = "00002a37-0000-1000-8000-00805f9b34fb";
+const SERVICE_UUID = "0000180F-0000-1000-8000-00805f9b34fb";
+const CHARACTERISTIC_UUID = "00002A19-0000-1000-8000-00805f9b34fb";
 
 interface BluetoothLowEnergyApi {
   requestPermissions(): Promise<boolean>;
   scanForPeripherals(): void;
   stop(): void;
   connectToDevice: (deviceId: Device) => Promise<void>;
+  sendDataToDevice: (data: boolean) => Promise<void>;
   disconnectFromDevice: () => void;
   connectedDevice: Device | null;
   allDevices: Device[];
@@ -32,16 +30,16 @@ function useBLE(): BluetoothLowEnergyApi {
     const bluetoothScanPermission = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
       {
-        title: "Location Permission",
-        message: "Bluetooth Low Energy requires Location",
+        title: "BLUETOOTH_SCAN Permission",
+        message: "Bluetooth Low Energy requires",
         buttonPositive: "OK",
       }
     );
     const bluetoothConnectPermission = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
       {
-        title: "Location Permission",
-        message: "Bluetooth Low Energy requires Location",
+        title: "BLUETOOTH_CONNECT Permission",
+        message: "Bluetooth Low Energy requires",
         buttonPositive: "OK",
       }
     );
@@ -62,6 +60,8 @@ function useBLE(): BluetoothLowEnergyApi {
   };
 
   function stop() {
+    disconnectFromDevice();
+    setAllDevices([]);
     bleManager.stopDeviceScan();
   }
 
@@ -95,7 +95,10 @@ function useBLE(): BluetoothLowEnergyApi {
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) console.log(error);
 
-      if (device && device.name?.includes("moto e(7) power")) {
+      if (!device) return;
+
+      
+      if (device.name?.includes('Tab S6 Lite')) {
         setAllDevices((prevState: Device[]) => {
           if (!isDuplicteDevice(prevState, device)) {
             return [...prevState, device];
@@ -108,10 +111,12 @@ function useBLE(): BluetoothLowEnergyApi {
   const connectToDevice = async (device: Device) => {
     try {
       const deviceConnection = await bleManager.connectToDevice(device.id);
+      
       setConnectedDevice(deviceConnection);
+      
       await deviceConnection.discoverAllServicesAndCharacteristics();
+      
       bleManager.stopDeviceScan();
-      startStreamingData(deviceConnection);
     } catch (e) {
       console.log("FAILED TO CONNECT", e);
     }
@@ -125,33 +130,23 @@ function useBLE(): BluetoothLowEnergyApi {
     }
   };
 
-  const onHeartRateUpdate = (
-    error: BleError | null,
-    characteristic: Characteristic | null
-  ) => {
-    if (error) {
-      console.log(error);
-      return -1;
-    } else if (!characteristic?.value) {
-      console.log("No Data was recieved");
-      return -1;
+  const sendDataToDevice = async (isOn: boolean) => {
+    if (!connectedDevice) {
+      console.log("Any device connected");
+      return;
     }
-
-    let innerHeartRate: number = -1;
-
-
-    setHeartRate(innerHeartRate);
-  };
-
-  const startStreamingData = async (device: Device) => {
-    if (device) {
-      device.monitorCharacteristicForService(
+  
+    try {
+      const base64Data = isOn ? "T04=" :  "T0ZG"; // ON : OFF
+  
+      await bleManager.writeCharacteristicWithResponseForDevice(
+        connectedDevice.id,
         SERVICE_UUID,
         CHARACTERISTIC_UUID,
-        onHeartRateUpdate
+        base64Data
       );
-    } else {
-      console.log("No Device Connected");
+    } catch (error) {
+      console.log("Erro ao enviar dados:", error);
     }
   };
 
@@ -164,6 +159,7 @@ function useBLE(): BluetoothLowEnergyApi {
     disconnectFromDevice,
     heartRate,
     stop,
+    sendDataToDevice,
   };
 }
 

@@ -7,7 +7,7 @@ export default function App() {
   return (
     <GestureHandlerRootView>
       <ThemeProvider>
-        <StatusBar />
+        <StatusBar style='dark' />
         <StackNavigator />
       </ThemeProvider>
     </GestureHandlerRootView>

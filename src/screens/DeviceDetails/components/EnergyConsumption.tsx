@@ -1,20 +1,15 @@
 import CardTitle from "@components/CardTitle";
 import { theme } from "@theme/index";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import { View } from "react-native";
 import Graph from "./Graph";
 import { useTheme } from "@contexts/Theme";
-import SelectPeriod from "@components/SelectPeriod";
+import SelectPeriod, { Period } from "@components/SelectPeriod";
 
-export default function EnergyConsumption() {
-  const [graphFilter, setGraphFilter] = useState("D");
+const EnergyConsumption = memo(function EnergyConsumptionComponent() {
+  const [graphFilter, setGraphFilter] = useState<Period>("D");
   const colorTheme = useTheme();
-
-  function getLabel() {
-    if (graphFilter === 'D') return { label: 'Hour', x: 24 };
-    if (graphFilter === 'W') return 'Day of week';
-    if (graphFilter === 'M') return 'Hour';
-  }
+  const { label, x, formatXLabel } = getLabel(graphFilter);
 
   return (
     <View>
@@ -28,11 +23,40 @@ export default function EnergyConsumption() {
         }}
       >
         <SelectPeriod selected={graphFilter} setSelected={setGraphFilter} />
-        <View style={{ marginBottom: theme.spacing.containerPadding }} />
-        <Graph DATA={generateMockData(24)} xKey="x" xLabel="Hour" />
+        
+        <Graph data={generateMockData(x)} xKey="x" xLabel={label} formatXLabel={formatXLabel} />
       </View>
     </View>
   );
+});
+
+const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function getLabel(selected: string) {
+  if (selected === 'D') {
+    return { label: 'Today', x: 24, formatXLabel: (value) => String(value) };
+  }
+
+  if (selected === 'W') {
+    return {
+      label: 'Weekday',
+      x: 7,
+      formatXLabel: (value) => daysOfWeek[value],
+    };
+  }
+
+  if (selected === 'M') {
+    return { label: 'Month', x: 31, formatXLabel: (value) => String(value) };
+  }
+  
+  return {
+    label: 'Year',
+    x: 12,
+    formatXLabel: (value) => {
+      const date = new Date(2023, value);
+      return date.toLocaleString("default", { month: "short" });
+    },
+  };
 }
 
 function generateMockData(index: number) {
@@ -41,3 +65,5 @@ function generateMockData(index: number) {
     consumption: 40 + 30 * Math.random(),
   }));
 }
+
+export default EnergyConsumption;

@@ -1,30 +1,30 @@
+import BluetoothConnection, {
+  BluetoothConnectionRef,
+} from "@components/BluetoothConnection";
 import CardDeviceAction from "@components/CardDeviceAction";
 import CardDeviceInfo from "@components/CardDeviceInfo";
+import HeaderBack from "@components/HeaderBack";
 import Text from "@components/Text";
 import { useTheme } from "@contexts/Theme";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { theme } from "@theme/index";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MOCK_DEVICES } from "../../data/mock";
-import CardTitle from "@components/CardTitle";
 import { ScrollView } from "react-native-gesture-handler";
-import Graph from "./components/Graph";
-import SelectPeriod from "@components/SelectPeriod";
+import { MOCK_DEVICES } from "../../data/mock";
 import EnergyConsumption from "./components/EnergyConsumption";
-import HeaderBack from "@components/HeaderBack";
 
 type Props = NativeStackScreenProps<RootStackParamList, "DeviceDetails">;
 
 export default function DeviceDetails({ navigation, route }: Props) {
   const colorTheme = useTheme();
+  const refBLE = useRef<BluetoothConnectionRef>();
   const id = route.params.id;
-  const device = MOCK_DEVICES.find(d => d.id === id)
-  const [isFavorite, setFavorite] = useState(device.favorite);
-  const [isOnline, setOnline] = useState(device.status === "online");
+  const device = MOCK_DEVICES.find((d) => d.id === id);
+  const [isFavorite, setFavorite] = useState(device?.favorite);
+  const [isOnline, setOnline] = useState(device?.status === "online");
 
   function handleSetFavorite() {
     setFavorite((f) => {
@@ -37,6 +37,9 @@ export default function DeviceDetails({ navigation, route }: Props) {
   function handleSetPower() {
     setOnline((o) => {
       const newState = !o;
+      if (refBLE.current) {
+        refBLE.current.handleSend(newState);
+      }
       device.status = newState ? "online" : "offline";
       return newState;
     });
@@ -49,6 +52,8 @@ export default function DeviceDetails({ navigation, route }: Props) {
       }}
     >
       <HeaderBack lastScreen="Home" />
+
+      {id === "ewrg45w" && <BluetoothConnection ref={refBLE} />}
 
       <View style={styles.containerHeader}>
         <Text type="title1">{device.name}</Text>
@@ -90,9 +95,9 @@ export default function DeviceDetails({ navigation, route }: Props) {
         />
 
         <View style={{ width: "48%", justifyContent: "space-between" }}>
-          <CardDeviceInfo
+          {!!device?.temperature && (<CardDeviceInfo
             label="Thermostat"
-            value="30 °F"
+            value={`${device?.temperature} °F`}
             icon={
               <View
                 style={[styles.containerButton, { backgroundColor: "#FC9702" }]}
@@ -104,11 +109,12 @@ export default function DeviceDetails({ navigation, route }: Props) {
                 />
               </View>
             }
-          />
+          />)}
 
-          <CardDeviceInfo
+          {!!device?.wind && (
+            <CardDeviceInfo
             label="Wind"
-            value="Low"
+            value={device?.wind}
             icon={
               <View
                 style={[
@@ -119,7 +125,7 @@ export default function DeviceDetails({ navigation, route }: Props) {
                 <FontAwesome6 name="wind" size={24} color={colorTheme.white} />
               </View>
             }
-          />
+          />)}
         </View>
       </View>
 

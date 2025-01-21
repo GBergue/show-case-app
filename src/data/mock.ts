@@ -13,6 +13,8 @@ export const MOCK_DEVICES: DeviceBean[] = [
     name: 'Air Conditioner',
     status: 'online',
     favorite: false,
+    wind: 'Low',
+    temperature: 30,
     img: 'https://www.pngplay.com/wp-content/uploads/6/Split-Inverter-Air-Conditioner-PNG.png',
   },
   {
@@ -24,14 +26,14 @@ export const MOCK_DEVICES: DeviceBean[] = [
   },
   {
     id: 'ewrg45w',
-    name: 'Lamp',
-    status: 'online',
+    name: 'Lamp room',
+    status: 'offline',
     favorite: true,
     img: 'https://yamamotto.com.br/wp-content/uploads/2021/11/Design-sem-nome-1.png',
   },
   {
     id: 'wjqhfiqufhqi',
-    name: 'Lamp',
+    name: 'Lamp living',
     status: 'offline',
     favorite: false,
     img: 'https://yamamotto.com.br/wp-content/uploads/2021/11/Design-sem-nome-1.png',

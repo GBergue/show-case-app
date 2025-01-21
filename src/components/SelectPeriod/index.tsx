@@ -5,7 +5,7 @@ import { lightTheme, theme } from "@theme/index";
 
 const PERIODS: Period[] = ["D", "W", "M", "Y"];
 
-type Period = "D" | "W" | "M" | "Y";
+export type Period = "D" | "W" | "M" | "Y";
 
 interface Props {
   selected: Period;
