@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "show-case-app-r-labs",
-    "slug": "show-case-app-r-labs",
+    "name": "show-case-app",
+    "slug": "show-case-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.bergue.showcaseapprlabs"
+      "package": "com.bergue.showcaseapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
