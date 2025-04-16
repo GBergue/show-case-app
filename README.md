@@ -1,5 +1,7 @@
 # 🚀 Show Case App
 
+![App banner](assets/bannerApp.png)
+
 A React Native application showcasing a **smart home device management system**. The app allows users to view, control, and monitor connected devices using **Bluetooth Low Energy (BLE)** technology.
 
 ## ✨ Features
@@ -12,7 +14,7 @@ A React Native application showcasing a **smart home device management system**.
 
 ## 📸 Screenshots
 
-_Add screenshots of the app here._
+![App screenshots](assets/Screenshots.png)
 
 ## ⚙️ Installation
 
